@@ -6,14 +6,13 @@ import org.movie.model.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class MovieDAO {
@@ -21,10 +20,13 @@ public class MovieDAO {
 
     private JdbcTemplate jdbcTemplate;
 
+    private SimpleJdbcInsert simpleJdbcInsert;
+
     @Autowired
     public MovieDAO(DataSource dataSource) {
 
         jdbcTemplate = new JdbcTemplate(dataSource);
+        simpleJdbcInsert = new SimpleJdbcInsert(dataSource);
     }
 
 
@@ -59,18 +61,14 @@ public class MovieDAO {
 
 
     public void saveMovie(Movie movie) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-         jdbcTemplate.update("INSERT INTO movies VALUES(9, ?, ?, ?, ?, ?, ?)",
-//                keyHolder,
+        jdbcTemplate.update("INSERT INTO movies(name, date, description, genre, raiting) VALUES(?, ?, ?, ?, ?)",
                 movie.getName(),
                 movie.getDate(),
                 movie.getDescription(),
                 movie.getGenre(),
-                movie.getActors(),
                 movie.getRaiting());
 
         List<String> actors = movie.getActors();
-        System.out.println("====================" + actors);
         List<Actors> actorByMovie = new ArrayList<>();
 
 
@@ -87,32 +85,38 @@ public class MovieDAO {
 
         });
 
-        System.out.println("========================= " + actorByMovie);
+
         //Метод для добавления данных
         saveActor(actorByMovie);
+        System.out.println("========================= " + movie.getId());
 
         //Добавляет id фильма и актера в таблицу
         actorByMovie.forEach(actor ->  {
             if (actor != null) {
-                jdbcTemplate.update("INSERT INTO movies_actors VALUES (?, ?)", movie.getId(), actor.getId());
+                jdbcTemplate.update("INSERT INTO movies_actors(movie_id, actor_id) VALUES (?, ?)", movie.getId(), actor.getId());
             }
         });
 
 
-     }
+    }
 
 
 
 
 
-     public void saveActor(List<Actors> actors) {
+    public void saveActor(List<Actors> actors) {
 
-            actors.forEach(actor -> {
-                if (actor != null) {
-                    jdbcTemplate.update("INSERT INTO actors VALUES(?, ?)", actor.getName(), actor.getLastname());
-                }
-         });
-     }
+        actors.forEach(actor -> {
+            if (actor != null) {
+                int id = jdbcTemplate.update("INSERT INTO actors(name, lastname) VALUES(?, ?) RETURNING id;", actor.getName(), actor.getLastname());
+                System.out.println(id + " id ");
+            }
+        });
+
+
+
+
+    }
 
     public void updateMovie(int id, Movie updateMovie) {
         jdbcTemplate.update("UPDATE movies SET name=?, date=?, description=?, genre=?, actors=?, raiting=? WHERE id=?",
