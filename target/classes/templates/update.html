@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" th:href="@{/styles/css/main.css}">
+
+    <title>Document</title>
+</head>
+<body>
+
+<form action="#" th:action="@{/save-movie}" th:object="${movie}" method="post" class="form">
+    <p>name: <input type="text" th:field="*{name}" /></p>
+    <p>Дата премьеры: <input type="date" th:field="*{date}" /></p>
+    <p>Описание фильма: <input type="text" th:field="*{description}" /></p>
+    <p>Жанр фильма: <input type="text" th:field="*{genre}" /></p>
+
+
+    <div class="inputs" th:each="actor: ${actor}">
+        <input
+                type="text"
+                th:field="*{actors}"
+                multiple
+                class="form__input"
+                placeholder="Введите ФИО актера"
+        >
+    </div>
+
+
+    <div class="add__btn">
+        <button class="add-btn__item">+</button>
+    </div>
+
+    <p>Рейтинг фильма: <input type="number" max="100" th:field="*{raiting}" /></p>
+
+    <br>
+
+    <input type="submit" value="Добавить" class="form__submit" />
+</form>
+
+<script th:src="@{/js/add-actors.js}"></script>
+
+</body>
+</html>
