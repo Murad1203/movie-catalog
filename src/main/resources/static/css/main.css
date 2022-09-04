@@ -1,0 +1,23 @@
+
+body {
+    background-color: aqua;
+}
+
+.add__btn {
+    margin-top: 16px;
+}
+
+.form__submit {
+    margin-top: 32px;
+}
+
+.form__input {
+    margin-top: 8px;
+}
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+}
+
