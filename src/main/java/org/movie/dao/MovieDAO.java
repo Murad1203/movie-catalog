@@ -53,7 +53,6 @@ public class MovieDAO {
 
     public List<Actors> actorsByMovie(int movieId) {
         List<ActorsId> actors_id = jdbcTemplate.query("select actor_id from movies_actors WHERE movie_id=?", BeanPropertyRowMapper.newInstance(ActorsId.class), movieId);
-
         List<Actors> actors = new ArrayList<>();
 
         actors_id.forEach(actor -> {
@@ -95,14 +94,14 @@ public class MovieDAO {
 
 
         //Метод для добавления данных
-        ActorsId actorId = saveActor(actorByMovie);
+        List<ActorsId> actorId = saveActor(actorByMovie);
 
 
+        actorId.stream()
+                .map(actorsId -> saveActorsByMovie(actorsId, movieId))
+                .collect(Collectors.toList());
 
         //Добавляет id фильма и актера в таблицу
-        actorByMovie.stream()
-                .map(actor-> saveActorsByMovie(actorId, movieId))
-                .collect(Collectors.toList());
 
     }
     private Actors mapActorDtoToDomainModel(String actorStr) {
@@ -127,11 +126,11 @@ public class MovieDAO {
 
 
 
-    public ActorsId saveActor(List<Actors> actors) {
+    public List<ActorsId> saveActor(List<Actors> actors) {
 
         keyHolder = new GeneratedKeyHolder();
 
-        ActorsId id = new ActorsId();
+        List<ActorsId> id = new ArrayList<>();
 
         String sql = "INSERT INTO actors(name, lastname) VALUES(:name, :lastname)";
         Map<String, Object> params = new HashMap<>();
@@ -142,9 +141,10 @@ public class MovieDAO {
                 params.put("lastname", actor.getLastname());
 
                 namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(params), keyHolder, new String[] { "id" });
-                id.setActorId(keyHolder.getKey().intValue());
+                ActorsId actorsId =  new ActorsId();
+                        actorsId.setActorId(keyHolder.getKey().intValue());
+                id.add(actorsId);
 
-                System.out.println("========" + id);
             }
         });
         return id;

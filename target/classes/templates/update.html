@@ -22,6 +22,7 @@
     <div class="inputs" th:each="actor: ${actor}">
         <input
                 type="text"
+                th:value="${actor}"
                 th:field="*{actors}"
                 multiple
                 class="form__input"

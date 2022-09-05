@@ -64,17 +64,19 @@ public class MovieController {
 
         Movie movie = movieDAO.getMovieById(id);
         List<Actors> actors = movieDAO.actorsByMovie(id);
+        System.out.println(" List ===" + actors);
 
         List<String> actorConcat =  actors.stream()
                         .map(actors1 -> {
                             String fio = actors1.getName() +  " " + actors1.getLastname();
+                            System.out.println("Конкат ---- " + fio);
                             return fio;
                         })
                         .collect(Collectors.toList());
 
         movie.setActors(actorConcat);
 
-        System.out.println(movie.getActors());
+//        System.out.println(movie.getActors());
 
         model.addAttribute("movie", movie);
         model.addAttribute("actor", movie.getActors());
@@ -88,8 +90,5 @@ public class MovieController {
         movieDAO.updateMovie(id, movie);
         return "redirect:/movie/" + id;
     }
-
-
-
 
 }
