@@ -1,6 +1,8 @@
 package org.movie.model;
 
-import java.util.Date;
+import org.springframework.jdbc.core.RowCallbackHandler;
+
+import java.sql.Date;
 import java.util.List;
 
 
@@ -9,17 +11,18 @@ public class Movie {
 
     private int id;
     private String name;
+
     private Date date;
     private String description;
     private String genre;
-    private List<Actors> actors;
+    private List<String> actors;
     private double raiting;
 
     public Movie() {
     }
 
 
-    public Movie(String name, Date date, String description, String genre, List<Actors> actors, double raiting) {
+    public Movie(String name, Date date, String description, String genre, List<String> actors, double raiting) {
         this.name = name;
         this.date = date;
         this.description = description;
@@ -37,12 +40,12 @@ public class Movie {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Date getDate() {
@@ -69,11 +72,11 @@ public class Movie {
         this.genre = genre;
     }
 
-    public List<Actors> getActors() {
+    public List<String> getActors() {
         return actors;
     }
 
-    public void setActors(List<Actors> actors) {
+    public void setActors(List<String> actors) {
         this.actors = actors;
     }
 
@@ -97,4 +100,5 @@ public class Movie {
                 ", raiting=" + raiting +
                 '}';
     }
+
 }
