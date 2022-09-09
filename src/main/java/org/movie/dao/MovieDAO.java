@@ -1,6 +1,5 @@
 package org.movie.dao;
 
-import lombok.extern.slf4j.Slf4j;
 import org.movie.dto.ActorsId;
 import org.movie.model.Actors;
 import org.movie.model.Movie;
@@ -11,18 +10,13 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-
 import javax.sql.DataSource;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
-@Slf4j
 public class MovieDAO {
-
-
     private JdbcTemplate jdbcTemplate;
-
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private GeneratedKeyHolder keyHolder;
 
@@ -32,25 +26,17 @@ public class MovieDAO {
         jdbcTemplate = new JdbcTemplate(dataSource);
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
-
-
-
     public List<Movie> allMovies() {
         return jdbcTemplate.query("select * from movies", BeanPropertyRowMapper.newInstance(Movie.class));
     }
-
-
     public Actors getActor(int id) {
         return (Actors) jdbcTemplate.query("select * from actors WHERE id=?", BeanPropertyRowMapper.newInstance(Actors.class), id)
                 .stream().findAny().orElse(null);
     }
-
-
     public Movie getMovieById(int id) {
         return jdbcTemplate.query("select * from movies WHERE id = ?", BeanPropertyRowMapper.newInstance(Movie.class), id)
                 .stream().findAny().orElse(null);
     }
-
     public List<Actors> actorsByMovie(int movieId) {
         List<ActorsId> actors_id = jdbcTemplate.query("select actor_id from movies_actors WHERE movie_id=?", BeanPropertyRowMapper.newInstance(ActorsId.class), movieId);
         List<Actors> actors = new ArrayList<>();
@@ -60,16 +46,10 @@ public class MovieDAO {
         });
         return actors;
     }
-
     public List<ActorsId> getIdsActorsByMovie(int id) {
         return jdbcTemplate.query("select actor_id from movies_actors WHERE movie_id=?", BeanPropertyRowMapper.newInstance(ActorsId.class), id);
     }
-
-
-
     public void saveMovie(Movie movie) {
-
-
         keyHolder = new GeneratedKeyHolder();
 
         String sql = "INSERT INTO movies(name, date, description, genre, raiting) VALUES(:name, :date, :description, :genre, :raiting);";
@@ -84,18 +64,12 @@ public class MovieDAO {
         int rowsAffected = namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(params), keyHolder, new String[] { "id" });
 
         Integer movieId = keyHolder.getKey().intValue();
-
-
         List<String> actors = movie.getActors();
         List<Actors> actorByMovie = new ArrayList<>();
-
-
-
 
         actors.stream()
                 .map(e -> actorByMovie.add(mapActorDtoToDomainModel(e)))
                 .collect(Collectors.toList());
-
 
         //Метод для добавления данных
         List<ActorsId> actorId = saveActor(actorByMovie);
@@ -104,9 +78,6 @@ public class MovieDAO {
         actorId.stream()
                 .map(actorsId -> saveActorsByMovie(actorsId, movieId))
                 .collect(Collectors.toList());
-
-        //Добавляет id фильма и актера в таблицу
-
     }
     private Actors mapActorDtoToDomainModel(String actorStr) {
 
@@ -119,17 +90,12 @@ public class MovieDAO {
         actor.setLastname(surname);
         return actor;
     }
-
-
     private ActorsId saveActorsByMovie(ActorsId actor, int movieId) {
         if (actor != null) {
             jdbcTemplate.update("INSERT INTO movies_actors(movie_id, actor_id) VALUES (?, ?)", movieId, actor.getActorId());
         }
         return actor;
     }
-
-
-
     public List<ActorsId> saveActor(List<Actors> actors) {
 
         keyHolder = new GeneratedKeyHolder();
@@ -153,9 +119,7 @@ public class MovieDAO {
         });
         return id;
     }
-
     public void updateMovie(int id, Movie updateMovie) {
-
         jdbcTemplate.update("UPDATE movies SET name=?, date=?, description=?, genre=?, raiting=? WHERE id=?",
                 updateMovie.getName(),
                 updateMovie.getDate(),
@@ -171,11 +135,9 @@ public class MovieDAO {
                 .map(e -> actorByMovie.add(mapActorDtoToDomainModel(e)))
                 .collect(Collectors.toList());
 
-
         List<ActorsId> actorsIds = getIdsActorsByMovie(id);
         Actors actortest = new Actors();
 
-        System.out.println("==== размер id " + actorsIds + "    ===== " + actorByMovie);
         if (actorsIds.size() < actorByMovie.size()) {
             List<ActorsId> actorId = saveActor(actorByMovie);
             actorId.stream()
@@ -191,33 +153,22 @@ public class MovieDAO {
                 updateActors(actortest);
             }
         }
-
-
     }
 
     public void updateActors(Actors actor) {
-
         jdbcTemplate.update("UPDATE actors SET name=?, lastname=? WHERE id=?",
                 actor.getName(),
                 actor.getLastname(),
                 actor.getId());
-
     }
-
-
     public void deleteMovie(int id) {
         List<ActorsId> actorsIds = getIdsActorsByMovie(id);
         jdbcTemplate.update("DELETE FROM movies_actors where movie_id=?", id);
         actorsIds.stream()
                 .forEach(actorsId -> deleteActor(actorsId.getActorId()));
-
         jdbcTemplate.update("DELETE FROM movies WHERE id=?", id);
-
     }
-
     public void deleteActor(int id) {
         jdbcTemplate.update("DELETE FROM actors WHERE id=?", id);
     }
-
-
 }
