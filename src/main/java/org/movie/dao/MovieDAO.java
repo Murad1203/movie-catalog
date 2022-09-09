@@ -61,6 +61,10 @@ public class MovieDAO {
         return actors;
     }
 
+    public List<ActorsId> getIdsActorsByMovie(int id) {
+        return jdbcTemplate.query("select actor_id from movies_actors WHERE movie_id=?", BeanPropertyRowMapper.newInstance(ActorsId.class), id);
+    }
+
 
 
     public void saveMovie(Movie movie) {
@@ -159,13 +163,60 @@ public class MovieDAO {
                 updateMovie.getGenre(),
                 updateMovie.getRaiting(), id);
 
+        List<String> actors = updateMovie.getActors();
+        System.out.println(" " + actors);
+        List<Actors> actorByMovie = new ArrayList<>();
 
+        actors.stream()
+                .map(e -> actorByMovie.add(mapActorDtoToDomainModel(e)))
+                .collect(Collectors.toList());
+
+
+        List<ActorsId> actorsIds = getIdsActorsByMovie(id);
+        Actors actortest = new Actors();
+
+        System.out.println("==== размер id " + actorsIds + "    ===== " + actorByMovie);
+        if (actorsIds.size() < actorByMovie.size()) {
+            List<ActorsId> actorId = saveActor(actorByMovie);
+            actorId.stream()
+                    .map(actorsId -> saveActorsByMovie(actorsId, id))
+                    .collect(Collectors.toList());
+        }
+        else {
+            for (int i = 0; i < actorsIds.size(); i++) {
+
+                actortest.setId(actorsIds.get(i).getActorId());
+                actortest.setName(actorByMovie.get(i).getName());
+                actortest.setLastname(actorByMovie.get(i).getLastname());
+                updateActors(actortest);
+            }
+        }
 
 
     }
 
+    public void updateActors(Actors actor) {
+
+        jdbcTemplate.update("UPDATE actors SET name=?, lastname=? WHERE id=?",
+                actor.getName(),
+                actor.getLastname(),
+                actor.getId());
+
+    }
+
+
     public void deleteMovie(int id) {
+        List<ActorsId> actorsIds = getIdsActorsByMovie(id);
+        jdbcTemplate.update("DELETE FROM movies_actors where movie_id=?", id);
+        actorsIds.stream()
+                .forEach(actorsId -> deleteActor(actorsId.getActorId()));
+
         jdbcTemplate.update("DELETE FROM movies WHERE id=?", id);
+
+    }
+
+    public void deleteActor(int id) {
+        jdbcTemplate.update("DELETE FROM actors WHERE id=?", id);
     }
 
 

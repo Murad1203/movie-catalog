@@ -12,18 +12,17 @@
 </head>
 <body>
 
-<form action="#" th:action="@{/save-movie}" th:object="${movie}" method="post" class="form">
+<form action="#" th:action="@{/update-movie/{id}(id=${movie.id})}" th:object="${movie}" method="post" class="form">
     <p>name: <input type="text" th:field="*{name}" /></p>
     <p>Дата премьеры: <input type="date" th:field="*{date}" /></p>
     <p>Описание фильма: <input type="text" th:field="*{description}" /></p>
     <p>Жанр фильма: <input type="text" th:field="*{genre}" /></p>
 
 
-    <div class="inputs" th:each="actor: ${actor}">
+    <div class="inputs" th:each="item, i: ${actor}">
         <input
                 type="text"
-                th:value="${actor}"
-                th:field="*{actors}"
+                th:field="*{actors[__${i.index}__]}"
                 multiple
                 class="form__input"
                 placeholder="Введите ФИО актера"
@@ -39,7 +38,7 @@
 
     <br>
 
-    <input type="submit" value="Добавить" class="form__submit" />
+    <input type="submit" value="Изменить" class="form__submit" />
 </form>
 
 <script th:src="@{/js/add-actors.js}"></script>

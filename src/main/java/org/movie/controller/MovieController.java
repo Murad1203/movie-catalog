@@ -1,6 +1,5 @@
 package org.movie.controller;
 
-import liquibase.license.LicenseService;
 import org.movie.dao.MovieDAO;
 import org.movie.model.Actors;
 import org.movie.model.Movie;
@@ -64,22 +63,20 @@ public class MovieController {
 
         Movie movie = movieDAO.getMovieById(id);
         List<Actors> actors = movieDAO.actorsByMovie(id);
-        System.out.println(" List ===" + actors);
 
         List<String> actorConcat =  actors.stream()
                         .map(actors1 -> {
                             String fio = actors1.getName() +  " " + actors1.getLastname();
-                            System.out.println("Конкат ---- " + fio);
                             return fio;
                         })
                         .collect(Collectors.toList());
 
         movie.setActors(actorConcat);
 
-//        System.out.println(movie.getActors());
+//        System.out.println(actors.get(0);
 
         model.addAttribute("movie", movie);
-        model.addAttribute("actor", movie.getActors());
+        model.addAttribute("actor", movieDAO.getIdsActorsByMovie(id));
         return "update";
 
     }
@@ -89,6 +86,12 @@ public class MovieController {
 
         movieDAO.updateMovie(id, movie);
         return "redirect:/movie/" + id;
+    }
+
+    @RequestMapping("/delete/{id}")
+    public String deleteMovie(@PathVariable int id) {
+        movieDAO.deleteMovie(id);
+        return "redirect:/";
     }
 
 }
