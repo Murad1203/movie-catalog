@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="3" author="Murad">
+    <changeSet id="9" author="Murad">
         <createTable tableName="movies-actors">
             <column name="movie_id" type="bigint"/>
             <column name="actor_id" type="bigint"/>

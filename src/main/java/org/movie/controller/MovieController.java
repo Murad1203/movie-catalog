@@ -1,7 +1,8 @@
 package org.movie.controller;
 
+import org.movie.dao.FilterDao;
 import org.movie.dao.MovieDAO;
-import org.movie.model.Actors;
+import org.movie.model.Actor;
 import org.movie.model.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,8 @@ public class MovieController {
     @Autowired
     private MovieDAO movieDAO;
 
+    private FilterDao filter;
+
     @GetMapping
     public String showAllMovies(Model model) {
         List<Movie> movies = movieDAO.allMovies();
@@ -27,7 +30,7 @@ public class MovieController {
     public String getMovie(@PathVariable int id, Model model) {
         Movie movie = movieDAO.getMovieById(id);
 
-        List<Actors> actors = movieDAO.actorsByMovie(id);
+        List<Actor> actors = movieDAO.actorsByMovie(id);
 
         model.addAttribute("movie", movie);
         model.addAttribute("actors", actors);
@@ -48,7 +51,7 @@ public class MovieController {
     @GetMapping("/update-movie/{id}")
     public String updateMovie(@PathVariable int id, Model model) {
         Movie movie = movieDAO.getMovieById(id);
-        List<Actors> actors = movieDAO.actorsByMovie(id);
+        List<Actor> actors = movieDAO.actorsByMovie(id);
 
         List<String> actorConcat =  actors.stream()
                         .map(actors1 -> {
@@ -72,7 +75,15 @@ public class MovieController {
     @RequestMapping("/delete/{id}")
     public String deleteMovie(@PathVariable int id) {
         movieDAO.deleteMovie(id);
+
         return "redirect:/";
     }
 
+    @GetMapping("/filter/{name}/{genre}/{lastname}")
+    public String filter(@PathVariable String name, @PathVariable String genre,@PathVariable String lastname, Model model) {
+        List<Movie> movies = filter.filter(name, genre, lastname);
+
+        model.addAttribute("movies", movies);
+        return "search";
+    }
 }

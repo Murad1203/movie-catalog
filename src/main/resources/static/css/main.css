@@ -1,8 +1,4 @@
 
-body {
-    background-color: aqua;
-}
-
 .add__btn {
     margin-top: 16px;
 }
@@ -21,3 +17,21 @@ body {
     width: 200px;
 }
 
+
+h1 {
+    text-align: center;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+
+.catalogy-movie {
+    background-color: #ececec;
+    width: 400px;
+    height: 300px;
+}
+
+
+.text {
+    size: 17px;
+}

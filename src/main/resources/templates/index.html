@@ -2,36 +2,42 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Document</title>
+    <link rel="stylesheet" th:href="@{/styles/css/main.css}">
 </head>
 <body>
 
-<h1>Фильмы</h1>
-
-<div th:each="movie: ${movies}">
-
-    <h2 th:text="${movie.name}"></h2> <br>
-    <h2 th:text="${movie.date}"></h2> <br>
-
-    <div th:each="actor: ${actors}">
-        <p th:text="${actor.name}"></p>
-        <p th:text="${actor.surname}"></p>
-    </div>
-
-    <br>
-
-    <a th:href="@{'/movie/' + ${movie.id}}">Открыть</a>
-    <p><a th:href="@{'/delete/'+ ${movie.id}}">Удалить</a></p>
-
+<div class="input-group mb-3">
+    <input id="nameMovie" type="text" class="form-control" placeholder="name movie">
+    <input id="genreIsMovie" type="text" class="form-control" placeholder="genre is movie">
+    <input id="lastnameIsActor" type="text" class="form-control" placeholder="lastname is actor">
+    <button class="button" type="button" id="btn">Применить</button>
 </div>
 
 
-<br>
-<br>
+<h1 class="title">Фильмы</h1>
+
+<div class="block">
+    <div class="catalogy-movie" th:each="movie: ${movies}">
+        <h2 th:text="${movie.name}" class="text"></h2>
+        <h2 class="desc" th:text="${movie.description}"></h2>
+        <h2 th:text="${movie.date}" class="date"></h2>
+
+        <div class="actors" th:each="actor: ${actors}">
+            <p th:text="${actor.name}"></p>
+            <p th:text="${actor.surname}"></p>
+        </div>
+
+        <a th:href="@{'/movie/' + ${movie.id}}">Открыть</a>
+        <p><a th:href="@{'/delete/'+ ${movie.id}}">Удалить</a></p>
+
+    </div>
+</div>
 
 <div>
     <a th:href="@{/save-movie}">Добавить пару данных</a>
 </div>
 
+<script th:src="@{/js/filter.js}"></script>
 
 </body>
 </html>
