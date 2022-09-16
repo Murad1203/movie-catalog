@@ -19,3 +19,14 @@ lastname - фамилия актера
 
 
 Стэк технологий: Spring MVC, JDBC, Liquibase, thymeleaf, Html, css
+
+
+Чтобы запустить проект вам надо 
+
+1. Java 11 и выше https://www.oracle.com/cis/java/technologies/javase/jdk11-archive-downloads.html
+2. Postgresql 12 https://www.postgresql.org/download/
+3. Maven https://maven.apache.org/download.cgi 
+Шаги для запуска приложения:
+установить в src/main/resources/application.yml свои параметры подключения к бд(url, username, password,hibernate.ddl-auto),
+собрать проект с помощью команды: mvn clean install
+запустить src/main/java/com/example/converter/Application.java
