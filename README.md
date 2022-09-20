@@ -27,6 +27,6 @@ lastname - фамилия актера
 2. Postgresql 12 https://www.postgresql.org/download/
 3. Maven https://maven.apache.org/download.cgi 
 Шаги для запуска приложения:
-установить в src/main/resources/application.yml свои параметры подключения к бд(url, username, password,hibernate.ddl-auto),
+установить в src/main/java/org/movie/config в классе SpringConfig в методе getDataSource() свои параметры подключения к бд(url, username, password),
 собрать проект с помощью команды: mvn clean install
-запустить src/main/java/com/example/converter/Application.java
+запустить Tomkat server
