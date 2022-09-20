@@ -1,6 +1,9 @@
 const addInput = document.querySelector(".add-btn__item"),
     inputsContainer = document.querySelector(".inputs");
 
+
+
+
 addInput.addEventListener("click", (e) => {
     e.preventDefault();
 
@@ -13,5 +16,10 @@ addInput.addEventListener("click", (e) => {
     newInput.setAttribute('value', '')
 
 
-    inputsContainer.appendChild(newInput)
+    inputsContainer.appendChild(newInput);
 })
+
+
+
+
+

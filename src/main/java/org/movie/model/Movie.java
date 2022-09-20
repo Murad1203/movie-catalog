@@ -1,7 +1,8 @@
 package org.movie.model;
 
+import org.springframework.jdbc.core.RowCallbackHandler;
+
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
 
 
@@ -39,12 +40,12 @@ public class Movie {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Date getDate() {
@@ -99,4 +100,5 @@ public class Movie {
                 ", raiting=" + raiting +
                 '}';
     }
+
 }

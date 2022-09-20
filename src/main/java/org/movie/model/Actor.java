@@ -1,14 +1,14 @@
 package org.movie.model;
 
-public class Actors {
+public class Actor {
     private int id;
     private String name;
     private String lastname;
 
-    public Actors() {
+    public Actor() {
     }
 
-    public Actors(int id, String name, String lastname) {
+    public Actor(int id, String name, String lastname) {
         this.id = id;
         this.name = name;
         this.lastname = lastname;
@@ -40,7 +40,7 @@ public class Actors {
 
     @Override
     public String toString() {
-        return "Actors{" +
+        return "Actor{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", lastname='" + lastname + '\'' +
